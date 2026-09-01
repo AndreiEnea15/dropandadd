@@ -20,7 +20,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=9">
+  <link rel="stylesheet" href="css/styles.css?v=10">
 
   <script type="application/ld+json">
   {
@@ -55,7 +55,21 @@
 <div class="stage-header">
   <div class="kicker">York Drop &amp; Add</div>
   <h1>Post what you&rsquo;re dropping. Find what you need.</h1>
-  <p>Get grouped by course, message the other student directly, and make the actual change yourself in REM.</p>
+  <p>Get grouped by course, message the other student directly, and connect to work out the details.</p>
+
+  <div class="hero-actions">
+    <button class="hero-btn primary" id="hero-find" type="button">Find a course</button>
+    <button class="hero-btn" id="hero-post" type="button">Post a listing</button>
+  </div>
+
+  <div class="recent-listings" id="recent-listings" style="display:none;">
+    <div class="recent-listings-label">Recent listings</div>
+    <ul class="recent-listings-list" id="recent-listings-list"></ul>
+  </div>
+
+  <div class="hero-warning">
+    <strong>Important:</strong> A listing does not reserve a seat. Course availability is controlled by York University — you're responsible for making the change yourself in REM.
+  </div>
 </div>
 
 <!-- ============ SIGN IN ============ -->
@@ -316,6 +330,6 @@
   <p class="site-footer-note">Created by Andrei Enea</p>
 </footer>
 
-<script type="module" src="js/app.js?v=9"></script>
+<script type="module" src="js/app.js?v=10"></script>
 </body>
 </html>

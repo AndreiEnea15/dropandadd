@@ -191,6 +191,12 @@ function wireBoard() {
     resetPostForm();
     showScreen('screen-post');
   });
+  el('hero-post').addEventListener('click', () => el('fab-post').click());
+  el('hero-find').addEventListener('click', () => {
+    if (document.body.dataset.screen !== 'screen-board') showScreen('screen-board');
+    const input = el('search-course');
+    setTimeout(() => { input.scrollIntoView({ behavior: 'smooth', block: 'center' }); input.focus(); }, 0);
+  });
   el('search-course').addEventListener('input', (e) => { filters.search = e.target.value; renderBoard(); });
 
   document.addEventListener('click', (e) => {
@@ -240,6 +246,21 @@ async function refreshListings() {
   listingsCache = data || [];
   renderChips();
   renderBoard();
+  renderRecentListings();
+}
+
+function renderRecentListings() {
+  const wrap = el('recent-listings');
+  const list = el('recent-listings-list');
+  if (!wrap || !list) return;
+  if (!listingsCache.length) { wrap.style.display = 'none'; list.innerHTML = ''; return; }
+  const recent = listingsCache.slice(0, 5);
+  list.innerHTML = recent.map((r) => {
+    const label = r.type === 'dropping' ? 'Dropping' : 'Needed';
+    const dotClass = r.type === 'dropping' ? 'drop' : 'need';
+    return `<li><span class="dot ${dotClass}"></span><span class="txt">${esc(r.subject + ' ' + r.course_number)} — ${label}</span></li>`;
+  }).join('');
+  wrap.style.display = 'flex';
 }
 
 function uniqueSorted(arr) { return Array.from(new Set(arr)).sort(); }
