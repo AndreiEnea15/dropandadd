@@ -9,7 +9,7 @@ function esc(s) {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach((s) => s.classList.toggle('active', s.id === id));
   document.body.dataset.screen = id;
-  el('frame').scrollTop = 0;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 const CAMPUS_OPTIONS = ['All', 'Keele', 'Glendon', 'Online'];
@@ -30,7 +30,6 @@ async function boot() {
   wireBoard();
   wirePost();
   wireDM();
-  wireSiteNav();
 
   // The board is public — show it immediately, don't wait on auth to load it.
   showScreen('screen-board');
@@ -67,18 +66,7 @@ async function onSessionChange(session) {
 }
 
 function updateAuthUI() {
-  const btn = el('auth-action');
-  if (me) {
-    btn.classList.add('icon');
-    btn.setAttribute('aria-label', 'Account');
-    btn.title = 'Account';
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
-  } else {
-    btn.classList.remove('icon');
-    btn.removeAttribute('title');
-    btn.removeAttribute('aria-label');
-    btn.textContent = 'Sign in';
-  }
+  el('auth-action').textContent = me ? 'Account' : 'Sign in';
   renderAuthScreen();
 }
 
@@ -108,18 +96,6 @@ async function ensureProfile(user) {
 function applySelectChevrons() {
   const chevron = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2360606a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E";
   document.querySelectorAll('select.field-input').forEach((s) => { s.style.backgroundImage = `url("${chevron}")`; });
-}
-
-/* ============================== site nav ============================== */
-
-function wireSiteNav() {
-  const openSignIn = (e) => {
-    e.preventDefault();
-    showScreen('screen-auth');
-    el('frame').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  };
-  el('nav-login')?.addEventListener('click', openSignIn);
-  el('nav-signup')?.addEventListener('click', openSignIn);
 }
 
 /* ============================== auth ============================== */
@@ -480,7 +456,7 @@ async function loadMessages(conversationId) {
 
   if (error) { console.error(error); el('dm-thread').innerHTML = '<div class="no-results">Couldn’t load messages.</div>'; return; }
   el('dm-thread').innerHTML = (data || []).map(bubbleHtml).join('');
-  el('dm-thread').scrollTop = el('dm-thread').scrollHeight;
+  el('screen-dm').scrollIntoView({ block: 'end' });
 }
 
 function bubbleHtml(m) {
@@ -502,9 +478,8 @@ function subscribeToConversation(conversationId) {
       event: 'INSERT', schema: 'public', table: 'messages',
       filter: 'conversation_id=eq.' + conversationId
     }, (payload) => {
-      const thread = el('dm-thread');
-      thread.insertAdjacentHTML('beforeend', bubbleHtml(payload.new));
-      thread.scrollTop = thread.scrollHeight;
+      el('dm-thread').insertAdjacentHTML('beforeend', bubbleHtml(payload.new));
+      el('screen-dm').scrollIntoView({ block: 'end', behavior: 'smooth' });
     })
     .subscribe();
 }

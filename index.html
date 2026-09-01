@@ -43,231 +43,215 @@
     <a href="faq.html">FAQ</a>
   </nav>
   <div class="site-nav-actions">
-    <a class="nav-btn nav-btn-ghost" href="#signin" id="nav-login">Log in</a>
-    <a class="nav-btn nav-btn-solid" href="#signin" id="nav-signup">Sign up</a>
+    <button class="auth-action" id="auth-action" type="button">Sign in</button>
   </div>
 </header>
 
-<div class="stage">
-  <div class="stage-header">
-    <div class="kicker">York Drop &amp; Add</div>
-    <h1>Swap courses with other York students</h1>
-    <p>Post what you're dropping or what you need, get grouped by course, and message the other student directly — you make the actual switch yourselves.</p>
+<div class="stage-header">
+  <div class="kicker">York Drop &amp; Add</div>
+  <h1>Swap courses with other York students</h1>
+  <p>Post what you're dropping or what you need, get grouped by course, and message the other student directly — you make the actual switch yourselves.</p>
+</div>
+
+<!-- ============ SIGN IN ============ -->
+<section class="screen" id="screen-auth" aria-label="Sign in">
+  <div class="topbar">
+    <button class="iconbtn" id="back-from-auth" aria-label="Back to board">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    </button>
+    <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16.5px;">Sign in</span>
   </div>
 
-  <div class="phone-wrap">
-    <div class="phone">
-      <div class="frame" id="frame">
+  <div class="auth-body">
 
-        <!-- ============ SIGN IN ============ -->
-        <section class="screen" id="screen-auth" aria-label="Sign in">
-          <div class="topbar">
-            <button class="iconbtn" id="back-from-auth" aria-label="Back to board">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            </button>
-            <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16.5px;">Sign in</span>
-          </div>
+    <div id="auth-signed-out" style="display:flex;flex-direction:column;gap:22px;">
+      <div class="auth-brand"><span class="bar"></span><span class="word">York Drop &amp; Add</span></div>
+      <p class="auth-copy">Sign in with your YorkU email to post a listing or message someone. We'll send a one-time link — no password to remember.</p>
 
-          <div class="auth-body">
+      <form id="auth-form" class="auth-field" style="display:flex;flex-direction:column;gap:8px;">
+        <label for="auth-email">YorkU email</label>
+        <input class="field-input" id="auth-email" type="email" placeholder="you@my.yorku.ca" autocomplete="email" required>
+        <div class="auth-error" id="auth-error"></div>
+        <button class="btn-submit" id="auth-submit" type="submit">Send magic link</button>
+      </form>
 
-            <div id="auth-signed-out" style="display:flex;flex-direction:column;gap:22px;">
-              <div class="auth-brand"><span class="bar"></span><span class="word">York Drop &amp; Add</span></div>
-              <p class="auth-copy">Sign in with your YorkU email to post a listing or message someone. We'll send a one-time link — no password to remember.</p>
+      <p class="auth-consent">By signing in, you agree we store your YorkU email to sign you in and let other students message you. Other students only ever see your display name — never your email. <a href="privacy.html" target="_blank" rel="noopener">Read the Privacy Notice</a>.</p>
 
-              <form id="auth-form" class="auth-field" style="display:flex;flex-direction:column;gap:8px;">
-                <label for="auth-email">YorkU email</label>
-                <input class="field-input" id="auth-email" type="email" placeholder="you@my.yorku.ca" autocomplete="email" required>
-                <div class="auth-error" id="auth-error"></div>
-                <button class="btn-submit" id="auth-submit" type="submit">Send magic link</button>
-              </form>
+      <div class="auth-sent" id="auth-sent">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);margin:0 auto;"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M22 6 12 13 2 6"></path><path d="M2 6h20v12H2z"></path></svg>
+        <p>Check <strong id="auth-sent-email"></strong> for a sign-in link.</p>
+        <span class="again" id="auth-again">Use a different email</span>
+      </div>
+    </div>
 
-              <p class="auth-consent">By signing in, you agree we store your YorkU email to sign you in and let other students message you. Other students only ever see your display name — never your email. <a href="privacy.html" target="_blank" rel="noopener">Read the Privacy Notice</a>.</p>
+    <div id="auth-account" style="display:none;flex-direction:column;gap:20px;">
+      <div class="account-head">
+        <span class="dm-avatar" id="account-avatar">Y</span>
+        <div class="dm-names">
+          <span class="nm" id="account-name-display">—</span>
+          <span class="ctx" id="account-email">—</span>
+        </div>
+      </div>
 
-              <div class="auth-sent" id="auth-sent">
-                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);margin:0 auto;"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M22 6 12 13 2 6"></path><path d="M2 6h20v12H2z"></path></svg>
-                <p>Check <strong id="auth-sent-email"></strong> for a sign-in link.</p>
-                <span class="again" id="auth-again">Use a different email</span>
-              </div>
-            </div>
+      <div class="field">
+        <label for="account-name-input">Display name</label>
+        <input class="field-input" id="account-name-input" type="text" maxlength="40">
+        <div class="form-error" id="account-name-error"></div>
+      </div>
+      <button class="btn-submit" id="account-name-save" type="button">Save name</button>
 
-            <div id="auth-account" style="display:none;flex-direction:column;gap:20px;">
-              <div class="account-head">
-                <span class="dm-avatar" id="account-avatar">Y</span>
-                <div class="dm-names">
-                  <span class="nm" id="account-name-display">—</span>
-                  <span class="ctx" id="account-email">—</span>
-                </div>
-              </div>
+      <button class="text-btn" id="account-sign-out" type="button">Sign out</button>
 
-              <div class="field">
-                <label for="account-name-input">Display name</label>
-                <input class="field-input" id="account-name-input" type="text" maxlength="40">
-                <div class="form-error" id="account-name-error"></div>
-              </div>
-              <button class="btn-submit" id="account-name-save" type="button">Save name</button>
+      <div class="danger-zone">
+        <div class="danger-title">Delete my account</div>
+        <p class="danger-copy">"Delete my data" removes your display name, every listing you've posted, and every conversation you're part of — right away, permanently. Your YorkU sign-in record itself stays with Supabase until you also ask us to remove it: email <a href="mailto:privacy@dropandadd.com">privacy@dropandadd.com</a>.</p>
+        <button class="btn-danger" id="account-delete" type="button">Delete my data</button>
+      </div>
+    </div>
 
-              <button class="text-btn" id="account-sign-out" type="button">Sign out</button>
+  </div>
+</section>
 
-              <div class="danger-zone">
-                <div class="danger-title">Delete my account</div>
-                <p class="danger-copy">"Delete my data" removes your display name, every listing you've posted, and every conversation you're part of — right away, permanently. Your YorkU sign-in record itself stays with Supabase until you also ask us to remove it: email <a href="mailto:privacy@dropandadd.com">privacy@dropandadd.com</a>.</p>
-                <button class="btn-danger" id="account-delete" type="button">Delete my data</button>
-              </div>
-            </div>
+<!-- ============ BOARD ============ -->
+<section class="screen active" id="screen-board" aria-label="Course thread board">
+  <div class="search-bar">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <input type="search" id="search-course" placeholder="Search course, e.g. ECON 1010" autocomplete="off">
+  </div>
 
-          </div>
-        </section>
+  <div class="filters">
+    <div class="chip-group">
+      <div class="chip-group-label">Type</div>
+      <div class="chiprow" id="chip-type"></div>
+    </div>
+    <div class="chip-group">
+      <div class="chip-group-label">Term</div>
+      <div class="chiprow" id="chip-term"></div>
+    </div>
+    <div class="chip-group">
+      <div class="chip-group-label">Subject</div>
+      <div class="chiprow" id="chip-subject"></div>
+    </div>
+    <div class="chip-group">
+      <div class="chip-group-label">Campus</div>
+      <div class="chiprow" id="chip-campus"></div>
+    </div>
+    <div class="disclaimer">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <span>We just connect you — you make the switch yourself in your Student Center.</span>
+    </div>
+  </div>
 
-        <!-- ============ BOARD ============ -->
-        <section class="screen active" id="screen-board" aria-label="Course thread board">
-          <div class="topbar" style="justify-content: space-between;">
-            <div class="board-brand"><span class="bar"></span><span class="word">York Drop &amp; Add</span></div>
-            <button class="auth-action" id="auth-action" type="button">Sign in</button>
-          </div>
+  <div class="board-scroll" id="board-scroll">
+    <div class="loading-note">Loading listings…</div>
+  </div>
 
-          <div class="search-bar">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="search" id="search-course" placeholder="Search course, e.g. ECON 1010" autocomplete="off">
-          </div>
+  <button class="fab" id="fab-post">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <span class="lbl">Post a listing</span>
+  </button>
+</section>
 
-          <div class="filters">
-            <div class="chip-group">
-              <div class="chip-group-label">Type</div>
-              <div class="chiprow" id="chip-type"></div>
-            </div>
-            <div class="chip-group">
-              <div class="chip-group-label">Term</div>
-              <div class="chiprow" id="chip-term"></div>
-            </div>
-            <div class="chip-group">
-              <div class="chip-group-label">Subject</div>
-              <div class="chiprow" id="chip-subject"></div>
-            </div>
-            <div class="chip-group">
-              <div class="chip-group-label">Campus</div>
-              <div class="chiprow" id="chip-campus"></div>
-            </div>
-            <div class="disclaimer">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-              <span>We just connect you — you make the switch yourself in your Student Center.</span>
-            </div>
-          </div>
+<!-- ============ POST FORM ============ -->
+<section class="screen" id="screen-post" aria-label="Post a listing">
+  <div class="topbar">
+    <button class="iconbtn" id="back-from-post" aria-label="Back to board">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    </button>
+    <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16.5px;">Post a listing</span>
+  </div>
 
-          <div class="board-scroll" id="board-scroll">
-            <div class="loading-note">Loading listings…</div>
-          </div>
+  <form class="form-scroll" id="post-form">
+    <div>
+      <div class="toggle-row">
+        <button class="toggle-btn drop" id="toggle-drop" type="button" aria-pressed="true">Dropping</button>
+        <button class="toggle-btn need" id="toggle-need" type="button" aria-pressed="false">Needed</button>
+      </div>
+      <div class="toggle-hint" id="toggle-hint">You have a seat you want to give up.</div>
+    </div>
 
-          <button class="fab" id="fab-post">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            <span class="lbl">Post a listing</span>
-          </button>
-        </section>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-subject">Subject</label>
+        <input class="field-input" id="f-subject" type="text" placeholder="e.g. ECON" required>
+      </div>
+      <div class="field">
+        <label for="f-number">Course number</label>
+        <input class="field-input" id="f-number" type="text" placeholder="e.g. 1010" required>
+      </div>
+    </div>
 
-        <!-- ============ POST FORM ============ -->
-        <section class="screen" id="screen-post" aria-label="Post a listing">
-          <div class="topbar">
-            <button class="iconbtn" id="back-from-post" aria-label="Back to board">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            </button>
-            <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16.5px;">Post a listing</span>
-          </div>
+    <div class="field">
+      <label for="f-section">Section <span class="opt">(optional)</span></label>
+      <input class="field-input" id="f-section" type="text" placeholder="e.g. Section A or LEC 01">
+    </div>
 
-          <form class="form-scroll" id="post-form">
-            <div>
-              <div class="toggle-row">
-                <button class="toggle-btn drop" id="toggle-drop" type="button" aria-pressed="true">Dropping</button>
-                <button class="toggle-btn need" id="toggle-need" type="button" aria-pressed="false">Needed</button>
-              </div>
-              <div class="toggle-hint" id="toggle-hint">You have a seat you want to give up.</div>
-            </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="f-term">Term</label>
+        <select class="field-input" id="f-term">
+          <option>Fall 2026</option>
+          <option>Winter 2027</option>
+          <option>Summer 2026</option>
+          <option>Fall/Winter 2026–27</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-campus">Campus</label>
+        <select class="field-input" id="f-campus">
+          <option>Keele</option>
+          <option>Glendon</option>
+          <option>Online</option>
+        </select>
+      </div>
+    </div>
 
-            <div class="field-row">
-              <div class="field">
-                <label for="f-subject">Subject</label>
-                <input class="field-input" id="f-subject" type="text" placeholder="e.g. ECON" required>
-              </div>
-              <div class="field">
-                <label for="f-number">Course number</label>
-                <input class="field-input" id="f-number" type="text" placeholder="e.g. 1010" required>
-              </div>
-            </div>
+    <div class="field">
+      <label for="f-note">Note <span class="opt">(optional)</span></label>
+      <textarea class="field-input" id="f-note" rows="3" placeholder="Anything the other student should know"></textarea>
+    </div>
+  </form>
 
-            <div class="field">
-              <label for="f-section">Section <span class="opt">(optional)</span></label>
-              <input class="field-input" id="f-section" type="text" placeholder="e.g. Section A or LEC 01">
-            </div>
+  <div class="submit-bar">
+    <button class="btn-submit" id="btn-submit" form="post-form" type="submit">Post listing</button>
+    <div class="form-error" id="post-error"></div>
+  </div>
 
-            <div class="field-row">
-              <div class="field">
-                <label for="f-term">Term</label>
-                <select class="field-input" id="f-term">
-                  <option>Fall 2026</option>
-                  <option>Winter 2027</option>
-                  <option>Summer 2026</option>
-                  <option>Fall/Winter 2026–27</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="f-campus">Campus</label>
-                <select class="field-input" id="f-campus">
-                  <option>Keele</option>
-                  <option>Glendon</option>
-                  <option>Online</option>
-                </select>
-              </div>
-            </div>
+  <div class="toast" id="toast">Posted — back to the board</div>
+</section>
 
-            <div class="field">
-              <label for="f-note">Note <span class="opt">(optional)</span></label>
-              <textarea class="field-input" id="f-note" rows="3" placeholder="Anything the other student should know"></textarea>
-            </div>
-          </form>
-
-          <div class="submit-bar">
-            <button class="btn-submit" id="btn-submit" form="post-form" type="submit">Post listing</button>
-            <div class="form-error" id="post-error"></div>
-          </div>
-
-          <div class="toast" id="toast">Posted — back to the board</div>
-        </section>
-
-        <!-- ============ DM ============ -->
-        <section class="screen" id="screen-dm" aria-label="Conversation">
-          <div class="topbar">
-            <button class="iconbtn" id="back-from-dm" aria-label="Back to board">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-            </button>
-            <div class="dm-head-info">
-              <span class="dm-avatar" id="dm-avatar">?</span>
-              <div class="dm-names">
-                <span class="nm" id="dm-name">—</span>
-                <span class="ctx" id="dm-course">—</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="dm-banner">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--accent-tint-fg);"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
-            <span id="dm-swap">—</span>
-          </div>
-          <div class="dm-note">You two coordinate here — the actual switch happens in your own Student Center.</div>
-
-          <div class="dm-thread" id="dm-thread"></div>
-
-          <div class="composer">
-            <input type="text" id="dm-input" placeholder="Type a message" autocomplete="off">
-            <button class="send-btn" id="dm-send" aria-label="Send message">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-            </button>
-          </div>
-        </section>
-
+<!-- ============ DM ============ -->
+<section class="screen" id="screen-dm" aria-label="Conversation">
+  <div class="topbar">
+    <button class="iconbtn" id="back-from-dm" aria-label="Back to board">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+    </button>
+    <div class="dm-head-info">
+      <span class="dm-avatar" id="dm-avatar">?</span>
+      <div class="dm-names">
+        <span class="nm" id="dm-name">—</span>
+        <span class="ctx" id="dm-course">—</span>
       </div>
     </div>
   </div>
 
-  <div class="caption">Browse freely — sign in with a YorkU email only when you're ready to post or message someone.</div>
-</div>
+  <div class="dm-banner">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;color:var(--accent-tint-fg);"><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path></svg>
+    <span id="dm-swap">—</span>
+  </div>
+  <div class="dm-note">You two coordinate here — the actual switch happens in your own Student Center.</div>
+
+  <div class="dm-thread" id="dm-thread"></div>
+
+  <div class="composer">
+    <input type="text" id="dm-input" placeholder="Type a message" autocomplete="off">
+    <button class="send-btn" id="dm-send" aria-label="Send message">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-fg)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </button>
+  </div>
+</section>
+
+<div class="caption">Browse freely — sign in with a YorkU email only when you're ready to post or message someone.</div>
 
 <section class="how-it-works">
   <h2>How it works</h2>
