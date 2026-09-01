@@ -63,14 +63,32 @@ function updateAuthUI() {
   const btn = el('auth-action');
   if (me) {
     btn.classList.add('icon');
-    btn.setAttribute('aria-label', 'Sign out');
-    btn.title = 'Sign out';
-    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>';
+    btn.setAttribute('aria-label', 'Account');
+    btn.title = 'Account';
+    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
   } else {
     btn.classList.remove('icon');
     btn.removeAttribute('title');
     btn.removeAttribute('aria-label');
     btn.textContent = 'Sign in';
+  }
+  renderAuthScreen();
+}
+
+function renderAuthScreen() {
+  const signedOut = el('auth-signed-out');
+  const account = el('auth-account');
+  if (me) {
+    signedOut.style.display = 'none';
+    account.style.display = 'flex';
+    el('account-avatar').textContent = (me.name.trim().charAt(0) || 'Y').toUpperCase();
+    el('account-name-display').textContent = me.name;
+    el('account-email').textContent = me.email;
+    el('account-name-input').value = me.name;
+    el('account-name-error').textContent = '';
+  } else {
+    signedOut.style.display = 'flex';
+    account.style.display = 'none';
   }
 }
 
@@ -118,6 +136,41 @@ function wireAuth() {
 
   el('auth-again').addEventListener('click', resetAuthForm);
   el('back-from-auth').addEventListener('click', () => showScreen('screen-board'));
+
+  el('account-name-save').addEventListener('click', saveDisplayName);
+  el('account-sign-out').addEventListener('click', () => supabase.auth.signOut());
+  el('account-delete').addEventListener('click', deleteMyAccount);
+}
+
+async function saveDisplayName() {
+  if (!me) return;
+  const input = el('account-name-input');
+  const errorEl = el('account-name-error');
+  const name = input.value.trim();
+  errorEl.textContent = '';
+
+  if (!name) { errorEl.textContent = "Display name can't be empty."; return; }
+  if (name.length > 40) { errorEl.textContent = 'Keep it under 40 characters.'; return; }
+
+  const { error } = await supabase.from('profiles').update({ display_name: name }).eq('id', me.id);
+  if (error) { errorEl.textContent = error.message; return; }
+
+  me.name = name;
+  el('account-name-display').textContent = name;
+  el('account-avatar').textContent = (name.charAt(0) || 'Y').toUpperCase();
+  await refreshListings();
+}
+
+async function deleteMyAccount() {
+  if (!me) return;
+  const sure = confirm("Delete your display name, listings, and messages? This can't be undone.");
+  if (!sure) return;
+
+  const { error } = await supabase.from('profiles').delete().eq('id', me.id);
+  if (error) { el('account-name-error').textContent = error.message; return; }
+
+  await supabase.auth.signOut();
+  showScreen('screen-board');
 }
 
 function resetAuthForm() {
@@ -130,9 +183,7 @@ function resetAuthForm() {
 /* ============================== board ============================== */
 
 function wireBoard() {
-  el('auth-action').addEventListener('click', () => {
-    if (me) { supabase.auth.signOut(); } else { showScreen('screen-auth'); }
-  });
+  el('auth-action').addEventListener('click', () => showScreen('screen-auth'));
   el('fab-post').addEventListener('click', () => {
     if (!me) { showScreen('screen-auth'); return; }
     resetPostForm();

@@ -24,6 +24,14 @@ create policy "users can update their own profile"
   using (id = auth.uid())
   with check (id = auth.uid());
 
+-- Deleting your profile cascades (via the foreign keys above/below) to every
+-- listing, conversation and message you're part of — this is what backs the
+-- app's "Delete my data" button.
+create policy "users can delete their own profile"
+  on public.profiles for delete
+  to authenticated
+  using (id = auth.uid());
+
 -- Auto-create a profile (display name = email prefix) whenever someone signs up.
 create or replace function public.handle_new_user()
 returns trigger

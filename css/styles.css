@@ -126,6 +126,18 @@ svg { display: block; }
 .auth-sent { display: none; text-align: center; padding: 18px 10px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface-2); }
 .auth-sent p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin: 6px 0 0; }
 .auth-sent .again { font-size: 12px; font-weight: 700; color: var(--accent); cursor: pointer; margin-top: 12px; display: inline-block; }
+.auth-consent { font-size: 11px; line-height: 1.5; color: var(--text-faint); }
+.auth-consent a { color: var(--text-muted); text-decoration: underline; }
+
+.account-head { display: flex; align-items: center; gap: 12px; }
+.text-btn { align-self: flex-start; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--text-muted); background: none; border: none; cursor: pointer; padding: 2px; }
+.text-btn:hover { color: var(--text); }
+.danger-zone { border: 1px solid var(--border); border-radius: 12px; padding: 14px 15px; display: flex; flex-direction: column; gap: 8px; }
+.danger-title { font-size: 12.5px; font-weight: 700; color: var(--text); }
+.danger-copy { font-size: 11px; line-height: 1.5; color: var(--text-muted); }
+.danger-copy a { color: var(--text-muted); text-decoration: underline; }
+.btn-danger { align-self: flex-start; font: inherit; font-size: 12.5px; font-weight: 700; color: var(--danger); background: none; border: 1.5px solid var(--danger); border-radius: 8px; padding: 8px 14px; cursor: pointer; }
+.btn-danger:hover { background: var(--danger); color: white; }
 
 /* ---------- board ---------- */
 .board-brand { display: flex; align-items: center; gap: 8px; }

@@ -32,21 +32,52 @@
           </div>
 
           <div class="auth-body">
-            <div class="auth-brand"><span class="bar"></span><span class="word">York Drop &amp; Add</span></div>
-            <p class="auth-copy">Sign in with your YorkU email to post a listing or message someone. We'll send a one-time link — no password to remember.</p>
 
-            <form id="auth-form" class="auth-field" style="display:flex;flex-direction:column;gap:8px;">
-              <label for="auth-email">YorkU email</label>
-              <input class="field-input" id="auth-email" type="email" placeholder="you@my.yorku.ca" autocomplete="email" required>
-              <div class="auth-error" id="auth-error"></div>
-              <button class="btn-submit" id="auth-submit" type="submit">Send magic link</button>
-            </form>
+            <div id="auth-signed-out" style="display:flex;flex-direction:column;gap:22px;">
+              <div class="auth-brand"><span class="bar"></span><span class="word">York Drop &amp; Add</span></div>
+              <p class="auth-copy">Sign in with your YorkU email to post a listing or message someone. We'll send a one-time link — no password to remember.</p>
 
-            <div class="auth-sent" id="auth-sent">
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);margin:0 auto;"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M22 6 12 13 2 6"></path><path d="M2 6h20v12H2z"></path></svg>
-              <p>Check <strong id="auth-sent-email"></strong> for a sign-in link.</p>
-              <span class="again" id="auth-again">Use a different email</span>
+              <form id="auth-form" class="auth-field" style="display:flex;flex-direction:column;gap:8px;">
+                <label for="auth-email">YorkU email</label>
+                <input class="field-input" id="auth-email" type="email" placeholder="you@my.yorku.ca" autocomplete="email" required>
+                <div class="auth-error" id="auth-error"></div>
+                <button class="btn-submit" id="auth-submit" type="submit">Send magic link</button>
+              </form>
+
+              <p class="auth-consent">By signing in, you agree we store your YorkU email to sign you in and let other students message you. Other students only ever see your display name — never your email. <a href="privacy.html" target="_blank" rel="noopener">Read the Privacy Notice</a>.</p>
+
+              <div class="auth-sent" id="auth-sent">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);margin:0 auto;"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M22 6 12 13 2 6"></path><path d="M2 6h20v12H2z"></path></svg>
+                <p>Check <strong id="auth-sent-email"></strong> for a sign-in link.</p>
+                <span class="again" id="auth-again">Use a different email</span>
+              </div>
             </div>
+
+            <div id="auth-account" style="display:none;flex-direction:column;gap:20px;">
+              <div class="account-head">
+                <span class="dm-avatar" id="account-avatar">Y</span>
+                <div class="dm-names">
+                  <span class="nm" id="account-name-display">—</span>
+                  <span class="ctx" id="account-email">—</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="account-name-input">Display name</label>
+                <input class="field-input" id="account-name-input" type="text" maxlength="40">
+                <div class="form-error" id="account-name-error"></div>
+              </div>
+              <button class="btn-submit" id="account-name-save" type="button">Save name</button>
+
+              <button class="text-btn" id="account-sign-out" type="button">Sign out</button>
+
+              <div class="danger-zone">
+                <div class="danger-title">Delete my account</div>
+                <p class="danger-copy">"Delete my data" removes your display name, every listing you've posted, and every conversation you're part of — right away, permanently. Your YorkU sign-in record itself stays with Supabase until you also ask us to remove it: email <a href="mailto:YOUR-EMAIL@example.com">YOUR-EMAIL@example.com</a>.</p>
+                <button class="btn-danger" id="account-delete" type="button">Delete my data</button>
+              </div>
+            </div>
+
           </div>
         </section>
 
