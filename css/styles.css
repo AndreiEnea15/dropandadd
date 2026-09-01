@@ -274,11 +274,11 @@ textarea.field-input { resize: none; font-family: inherit; }
 
   /* course threads flow into two columns instead of one long list */
   .board-scroll {
-    display: block;
-    columns: 2;
-    column-gap: 22px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 20px 22px;
     padding: 20px 22px 110px;
   }
-  .board-scroll > div { break-inside: avoid; margin: 0 0 22px; }
-  .no-results, .loading-note { columns: 1; }
+  .no-results, .loading-note { grid-column: 1 / -1; }
 }
