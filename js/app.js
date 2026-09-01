@@ -21,6 +21,7 @@ let filters = { type: 'All', term: 'All', subject: 'All', campus: 'All', search:
 let currentConversation = null;
 let messageChannel = null;
 let postType = 'dropping';
+let dmReturnScreen = 'screen-board'; // where the back button on the DM screen goes
 
 /* ============================== boot ============================== */
 
@@ -63,10 +64,12 @@ async function onSessionChange(session) {
   resetAuthForm();
   updateAuthUI();
   await refreshListings();
+  await refreshUnreadBadge();
 }
 
 function updateAuthUI() {
   el('auth-action').textContent = me ? 'Account' : 'Sign in';
+  el('nav-messages').style.display = me ? 'inline-flex' : 'none';
   renderAuthScreen();
 }
 
@@ -139,6 +142,7 @@ function wireAuth() {
   el('account-name-save').addEventListener('click', saveDisplayName);
   el('account-sign-out').addEventListener('click', () => supabase.auth.signOut());
   el('account-delete').addEventListener('click', deleteMyAccount);
+  el('account-view-messages').addEventListener('click', () => { showScreen('screen-inbox'); refreshInbox(); });
 }
 
 async function saveDisplayName() {
@@ -183,6 +187,8 @@ function resetAuthForm() {
 
 function wireBoard() {
   el('auth-action').addEventListener('click', () => showScreen('screen-auth'));
+  el('nav-messages').addEventListener('click', () => { showScreen('screen-inbox'); refreshInbox(); });
+  el('back-from-inbox').addEventListener('click', () => showScreen('screen-board'));
   el('fab-post').addEventListener('click', () => {
     if (!me) { showScreen('screen-auth'); return; }
     resetPostForm();
@@ -193,6 +199,10 @@ function wireBoard() {
   document.addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
     if (chip) { filters[chip.dataset.key] = chip.dataset.val; renderChips(); renderBoard(); return; }
+
+    const inboxRow = e.target.closest('.inbox-row');
+    if (inboxRow) { openConversationFromInbox(inboxRow.dataset); return; }
+
     const card = e.target.closest('.card');
     if (!card) return;
     if (card.classList.contains('mine')) {
@@ -200,6 +210,7 @@ function wireBoard() {
     } else if (!me) {
       showScreen('screen-auth');
     } else {
+      dmReturnScreen = 'screen-board';
       openDM(card.dataset);
     }
   });
@@ -406,18 +417,33 @@ function wireDM() {
 function closeDM() {
   if (messageChannel) { supabase.removeChannel(messageChannel); messageChannel = null; }
   currentConversation = null;
-  showScreen('screen-board');
+  showScreen(dmReturnScreen);
+  refreshUnreadBadge();
+}
+
+// headerInfo: { initial, name, courseLine }
+async function enterConversation(convo, headerInfo) {
+  el('dm-avatar').textContent = headerInfo.initial;
+  el('dm-name').textContent = headerInfo.name;
+  el('dm-course').textContent = headerInfo.courseLine;
+  el('dm-swap').textContent = 'Re: ' + headerInfo.courseLine;
+  el('dm-thread').innerHTML = '<div class="loading-note">Loading conversation…</div>';
+  showScreen('screen-dm');
+
+  currentConversation = convo;
+  await loadMessages(convo.id);
+  subscribeToConversation(convo.id);
+  setLastSeen(convo.id);
 }
 
 async function openDM(d) {
   if (!me) return;
-
+  showScreen('screen-dm');
   el('dm-avatar').textContent = d.initial;
   el('dm-name').textContent = d.name;
   el('dm-course').textContent = d.course + (d.section ? ' · ' + d.section : '');
   el('dm-swap').textContent = 'Re: ' + d.course + (d.section ? ' · ' + d.section : '');
   el('dm-thread').innerHTML = '<div class="loading-note">Loading conversation…</div>';
-  showScreen('screen-dm');
 
   const convo = await findOrCreateConversation(d.listingId, d.userId);
   if (!convo) {
@@ -425,9 +451,16 @@ async function openDM(d) {
     return;
   }
 
-  currentConversation = convo;
-  await loadMessages(convo.id);
-  subscribeToConversation(convo.id);
+  await enterConversation(convo, {
+    initial: d.initial,
+    name: d.name,
+    courseLine: d.course + (d.section ? ' · ' + d.section : '')
+  });
+}
+
+async function openConversationFromInbox(d) {
+  dmReturnScreen = 'screen-inbox';
+  await enterConversation({ id: d.convoId }, { initial: d.initial, name: d.name, courseLine: d.course });
 }
 
 async function findOrCreateConversation(listingId, otherUserId) {
@@ -484,6 +517,7 @@ function subscribeToConversation(conversationId) {
     }, (payload) => {
       el('dm-thread').insertAdjacentHTML('beforeend', bubbleHtml(payload.new));
       el('screen-dm').scrollIntoView({ block: 'end', behavior: 'smooth' });
+      setLastSeen(conversationId);
     })
     .subscribe();
 }
@@ -499,6 +533,123 @@ async function sendMessage() {
     body
   });
   if (error) console.error(error);
+}
+
+/* ============================== inbox ============================== */
+
+function lastSeenKey(conversationId) { return 'dropadd_seen_' + conversationId; }
+
+function getLastSeen(conversationId) {
+  try { return localStorage.getItem(lastSeenKey(conversationId)); } catch { return null; }
+}
+
+function setLastSeen(conversationId) {
+  try { localStorage.setItem(lastSeenKey(conversationId), new Date().toISOString()); } catch { /* ignore */ }
+}
+
+function relativeTime(iso) {
+  const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return mins + 'm ago';
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return hours + 'h ago';
+  const days = Math.round(hours / 24);
+  if (days < 7) return days + 'd ago';
+  return new Date(iso).toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
+
+// One row per conversation the signed-in user is part of, with the other
+// person's name, the listing it's about, a preview of the latest message,
+// and whether that latest message is unread (tracked client-side via
+// localStorage, since there's no server-side read-state yet).
+async function fetchConversationSummaries() {
+  if (!me) return [];
+
+  const { data: convos, error } = await supabase
+    .from('conversations')
+    .select('id, listing_id, user_a, user_b, created_at')
+    .or(`user_a.eq.${me.id},user_b.eq.${me.id}`)
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error(error); return null; }
+  if (!convos || convos.length === 0) return [];
+
+  const otherIds = [...new Set(convos.map((c) => (c.user_a === me.id ? c.user_b : c.user_a)))];
+  const listingIds = [...new Set(convos.map((c) => c.listing_id).filter(Boolean))];
+  const convoIds = convos.map((c) => c.id);
+
+  const [profilesRes, listingsRes, messagesRes] = await Promise.all([
+    supabase.from('profiles').select('id, display_name').in('id', otherIds),
+    listingIds.length
+      ? supabase.from('listings').select('id, subject, course_number, section').in('id', listingIds)
+      : Promise.resolve({ data: [] }),
+    supabase.from('messages').select('conversation_id, body, created_at, sender_id').in('conversation_id', convoIds).order('created_at', { ascending: false })
+  ]);
+
+  const profileMap = new Map((profilesRes.data || []).map((p) => [p.id, p]));
+  const listingMap = new Map((listingsRes.data || []).map((l) => [l.id, l]));
+  const lastMsgMap = new Map();
+  (messagesRes.data || []).forEach((m) => { if (!lastMsgMap.has(m.conversation_id)) lastMsgMap.set(m.conversation_id, m); });
+
+  const rows = convos.map((c) => {
+    const otherId = c.user_a === me.id ? c.user_b : c.user_a;
+    const otherProfile = profileMap.get(otherId);
+    const name = (otherProfile && otherProfile.display_name) || 'York student';
+    const initial = (name.trim().charAt(0) || 'Y').toUpperCase();
+    const listing = listingMap.get(c.listing_id);
+    const courseLine = listing
+      ? listing.subject + ' ' + listing.course_number + (listing.section ? ' · ' + listing.section : '')
+      : 'a listing';
+    const last = lastMsgMap.get(c.id);
+    const preview = last ? ((last.sender_id === me.id ? 'You: ' : '') + last.body) : 'Say hello';
+    const lastTime = last ? last.created_at : c.created_at;
+    const lastSeen = getLastSeen(c.id);
+    const unread = !!last && last.sender_id !== me.id && (!lastSeen || new Date(last.created_at) > new Date(lastSeen));
+    return { id: c.id, otherId, name, initial, courseLine, preview, lastTime, unread };
+  });
+
+  rows.sort((a, b) => new Date(b.lastTime) - new Date(a.lastTime));
+  return rows;
+}
+
+function updateUnreadDot(rows) {
+  const hasUnread = Array.isArray(rows) && rows.some((r) => r.unread);
+  el('inbox-dot').style.display = hasUnread ? 'block' : 'none';
+}
+
+async function refreshUnreadBadge() {
+  if (!me) { el('inbox-dot').style.display = 'none'; return; }
+  updateUnreadDot(await fetchConversationSummaries());
+}
+
+async function refreshInbox() {
+  el('inbox-list').innerHTML = '<div class="loading-note">Loading messages…</div>';
+  const rows = await fetchConversationSummaries();
+
+  if (rows === null) {
+    el('inbox-list').innerHTML = '<div class="no-results">Couldn’t load messages — try reloading.</div>';
+    return;
+  }
+  updateUnreadDot(rows);
+
+  if (rows.length === 0) {
+    el('inbox-list').innerHTML = '<div class="no-results">No conversations yet — message someone from the board to start one.</div>';
+    return;
+  }
+
+  el('inbox-list').innerHTML = rows.map((r) => `
+    <button class="inbox-row" type="button" data-convo-id="${esc(r.id)}" data-other-id="${esc(r.otherId)}" data-name="${esc(r.name)}" data-initial="${esc(r.initial)}" data-course="${esc(r.courseLine)}">
+      <span class="avatar">${esc(r.initial)}</span>
+      <div class="inbox-row-body">
+        <div class="inbox-row-top">
+          <span class="inbox-row-name">${r.unread ? '<span class="dot"></span>' : ''}${esc(r.name)}</span>
+          <span class="inbox-row-time">${esc(relativeTime(r.lastTime))}</span>
+        </div>
+        <div class="inbox-row-course">${esc(r.courseLine)}</div>
+        <div class="inbox-row-preview">${esc(r.preview)}</div>
+      </div>
+    </button>
+  `).join('');
 }
 
 boot();
