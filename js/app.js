@@ -22,6 +22,7 @@ let currentConversation = null;
 let messageChannel = null;
 let postType = 'dropping';
 let dmReturnScreen = 'screen-board'; // where the back button on the DM screen goes
+let currentOtherName = '';   // the other person in the open DM, used to label their bubbles
 
 /* ============================== boot ============================== */
 
@@ -430,6 +431,7 @@ async function enterConversation(convo, headerInfo) {
   el('dm-thread').innerHTML = '<div class="loading-note">Loading conversation…</div>';
   showScreen('screen-dm');
 
+  currentOtherName = headerInfo.name;
   currentConversation = convo;
   await loadMessages(convo.id);
   subscribeToConversation(convo.id);
@@ -498,9 +500,11 @@ async function loadMessages(conversationId) {
 
 function bubbleHtml(m) {
   const mine = me && m.sender_id === me.id;
+  const sender = mine ? 'You' : (currentOtherName || 'Them');
   const time = new Date(m.created_at).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
   return `
     <div class="msg-row ${mine ? 'me' : 'them'}">
+      <div class="msg-sender">${esc(sender)}</div>
       <div class="bubble">${esc(m.body)}</div>
       <div class="msg-time">${esc(time)}</div>
     </div>

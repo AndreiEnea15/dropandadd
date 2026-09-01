@@ -278,6 +278,7 @@ textarea.field-input { resize: none; font-family: inherit; }
 .msg-row { display: flex; flex-direction: column; max-width: 100%; }
 .msg-row.me { align-items: flex-end; }
 .msg-row.them { align-items: flex-start; }
+.msg-sender { font-size: 10px; font-weight: 700; letter-spacing: 0.02em; color: var(--text-faint); margin: 0 4px 3px; }
 .bubble { max-width: 74%; padding: 10px 13px; border-radius: 15px; font-size: 13.5px; line-height: 1.4; }
 .msg-row.them .bubble { background: var(--ink-tint); color: var(--text); border-bottom-left-radius: 4px; }
 .msg-row.me .bubble { background: var(--ink); color: var(--ink-fg); border-bottom-right-radius: 4px; }
