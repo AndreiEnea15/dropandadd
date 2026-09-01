@@ -1,9 +1,9 @@
 # York Drop & Add
 
-A course-swap board for York University students: post what you're dropping or
-what you need, get grouped by course, and message another student directly.
-The app never touches your actual enrollment — you make the real switch
-yourself in your Student Center.
+A course drop & add board for York University students: post what you're
+dropping or what you need, get grouped by course, and message another student
+directly. The app never touches your actual enrollment — you make the real
+change yourself in REM (York's Registration and Enrolment Module).
 
 Anyone can browse the board without an account. Signing in with a YorkU email
 is only required to post a listing or message someone.
