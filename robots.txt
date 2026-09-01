@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dropandadd.com/sitemap.xml
