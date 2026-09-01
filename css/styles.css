@@ -103,7 +103,7 @@ svg { display: block; }
 .site-nav-actions { display: flex; align-items: center; gap: 14px; }
 .auth-action, .inbox-btn { display: inline-flex; align-items: center; justify-content: center; height: 40px; font: inherit; font-size: 13px; font-weight: 700; color: var(--stage-fg); border-radius: 999px; border: 1.5px solid var(--border); cursor: pointer; }
 .auth-action { padding: 0 18px; background: none; text-decoration: none; }
-.auth-action:hover { border-color: var(--accent); color: var(--accent); }
+.auth-action:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
 @media (max-width: 640px) {
   .site-nav-links { display: none; }
 }
@@ -165,7 +165,7 @@ body.doc-page { display: block; padding: 32px 20px 80px; }
 .iconbtn { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin: -4px; border-radius: 8px; cursor: pointer; border: none; background: transparent; color: var(--text); flex-shrink: 0; }
 .iconbtn:hover { background: var(--surface-2); }
 .inbox-btn { position: relative; gap: 7px; padding: 0 16px 0 14px; background: var(--surface-2); }
-.inbox-btn:hover { border-color: var(--accent); color: var(--accent); }
+.inbox-btn:hover { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
 .inbox-dot { position: absolute; top: 7px; right: 10px; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); border: 2px solid var(--surface-2); }
 .iconbtn:focus-visible, .chip:focus-visible, .card:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
