@@ -73,6 +73,19 @@ step) — Hostinger just needs to serve the files:
 That's it — the site talks to Supabase directly from the browser, so
 there's nothing else to run or keep alive on Hostinger's end.
 
+## After every deploy that changes CSS or JS
+
+Hostinger's CDN caches `css/styles.css` and `js/app.js` for **7 days**, but
+`index.html` is never cached. That mismatch means a stale cached JS/CSS file
+can end up served alongside fresh HTML — which can genuinely break the site
+(an old script expecting an element the new HTML removed, for example).
+
+Every HTML file loads these two files with a `?v=1` query string
+(`css/styles.css?v=1`, `js/app.js?v=1`). **Whenever you change
+`css/styles.css` or `js/app.js`, bump that number in every HTML file that
+references it** — that changes the URL, which forces a fresh fetch instead
+of waiting up to 7 days for the cache to expire on its own.
+
 ## What's deliberately not built yet
 
 - Editing or closing your own listing once posted (you can still post a new
