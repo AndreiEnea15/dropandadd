@@ -5,6 +5,9 @@ what you need, get grouped by course, and message another student directly.
 The app never touches your actual enrollment — you make the real switch
 yourself in your Student Center.
 
+Anyone can browse the board without an account. Signing in with a YorkU email
+is only required to post a listing or message someone.
+
 Plain HTML/CSS/JS, no build step. The Supabase JS client is loaded straight
 from a CDN as an ES module, so you can upload this folder to Hostinger as-is.
 
@@ -35,8 +38,10 @@ where the site will actually live:
   magic links are refused if the return address isn't in this list.
 
 No further auth setup needed — `is_yorku_email()` in the schema already
-blocks anyone without a `@my.yorku.ca` / `@yorku.ca` address from posting,
-messaging, or reading past what RLS allows.
+blocks anyone without a `@my.yorku.ca` / `@yorku.ca` address from posting a
+listing or sending a message. Browsing the board and profile display names
+is open to anyone, signed in or not; conversations stay private to their two
+participants either way.
 
 ## 3. Try it locally
 

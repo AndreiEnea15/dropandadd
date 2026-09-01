@@ -30,6 +30,10 @@ async function boot() {
   wirePost();
   wireDM();
 
+  // The board is public — show it immediately, don't wait on auth to load it.
+  showScreen('screen-board');
+  await refreshListings();
+
   const { data: { session } } = await supabase.auth.getSession();
   await onSessionChange(session);
 
@@ -41,14 +45,32 @@ async function boot() {
 async function onSessionChange(session) {
   if (session && session.user) {
     me = await ensureProfile(session.user);
-    showScreen('screen-board');
-    await refreshListings();
   } else {
     me = null;
     if (messageChannel) { supabase.removeChannel(messageChannel); messageChannel = null; }
     currentConversation = null;
-    resetAuthForm();
-    showScreen('screen-auth');
+    // signed out mid-flow on a screen that requires an account — send them back to the board
+    if (document.body.dataset.screen === 'screen-post' || document.body.dataset.screen === 'screen-dm') {
+      showScreen('screen-board');
+    }
+  }
+  resetAuthForm();
+  updateAuthUI();
+  await refreshListings();
+}
+
+function updateAuthUI() {
+  const btn = el('auth-action');
+  if (me) {
+    btn.classList.add('icon');
+    btn.setAttribute('aria-label', 'Sign out');
+    btn.title = 'Sign out';
+    btn.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>';
+  } else {
+    btn.classList.remove('icon');
+    btn.removeAttribute('title');
+    btn.removeAttribute('aria-label');
+    btn.textContent = 'Sign in';
   }
 }
 
@@ -95,6 +117,7 @@ function wireAuth() {
   });
 
   el('auth-again').addEventListener('click', resetAuthForm);
+  el('back-from-auth').addEventListener('click', () => showScreen('screen-board'));
 }
 
 function resetAuthForm() {
@@ -107,15 +130,24 @@ function resetAuthForm() {
 /* ============================== board ============================== */
 
 function wireBoard() {
-  el('sign-out').addEventListener('click', () => supabase.auth.signOut());
-  el('fab-post').addEventListener('click', () => { resetPostForm(); showScreen('screen-post'); });
+  el('auth-action').addEventListener('click', () => {
+    if (me) { supabase.auth.signOut(); } else { showScreen('screen-auth'); }
+  });
+  el('fab-post').addEventListener('click', () => {
+    if (!me) { showScreen('screen-auth'); return; }
+    resetPostForm();
+    showScreen('screen-post');
+  });
   el('search-course').addEventListener('input', (e) => { filters.search = e.target.value; renderBoard(); });
 
   document.addEventListener('click', (e) => {
     const chip = e.target.closest('.chip');
     if (chip) { filters[chip.dataset.key] = chip.dataset.val; renderChips(); renderBoard(); return; }
     const card = e.target.closest('.card');
-    if (card && !card.classList.contains('mine')) { openDM(card.dataset); }
+    if (card && !card.classList.contains('mine')) {
+      if (!me) { showScreen('screen-auth'); return; }
+      openDM(card.dataset);
+    }
   });
 }
 

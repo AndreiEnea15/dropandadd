@@ -14,9 +14,9 @@ create table public.profiles (
 
 alter table public.profiles enable row level security;
 
-create policy "profiles are readable by any signed-in user"
+create policy "profiles are publicly readable"
   on public.profiles for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
 create policy "users can update their own profile"
@@ -75,9 +75,9 @@ create table public.listings (
 
 alter table public.listings enable row level security;
 
-create policy "listings are readable by any signed-in user"
+create policy "listings are publicly readable"
   on public.listings for select
-  to authenticated
+  to anon, authenticated
   using (true);
 
 create policy "yorku users can post their own listings"

@@ -113,7 +113,10 @@ svg { display: block; }
 .iconbtn:focus-visible, .chip:focus-visible, .card:focus-visible, .btn:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* ---------- auth ---------- */
-#screen-auth { align-items: stretch; justify-content: center; padding: 40px 26px; gap: 22px; }
+.auth-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; justify-content: center; align-items: stretch; padding: 28px 26px 24px; gap: 22px; }
+.auth-action { font: inherit; font-size: 12.5px; font-weight: 700; color: var(--accent); background: none; border: none; cursor: pointer; padding: 6px 4px; }
+.auth-action.icon { display: inline-flex; align-items: center; justify-content: center; width: 30px; height: 30px; margin: -4px; border-radius: 8px; color: var(--text); padding: 0; }
+.auth-action.icon:hover { background: var(--surface-2); }
 .auth-brand { display: flex; align-items: center; gap: 8px; justify-content: center; }
 .auth-brand .bar { width: 5px; height: 19px; border-radius: 3px; background: var(--accent); }
 .auth-brand .word { font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700; font-size: 18px; letter-spacing: -0.01em; }
