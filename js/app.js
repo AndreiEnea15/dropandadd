@@ -13,10 +13,11 @@ function showScreen(id) {
 }
 
 const CAMPUS_OPTIONS = ['All', 'Keele', 'Glendon', 'Online'];
+const TYPE_OPTIONS = ['All', 'Dropping', 'Needed'];
 
 let me = null;               // { id, email, name }
 let listingsCache = [];
-let filters = { term: 'All', subject: 'All', campus: 'All', search: '' };
+let filters = { type: 'All', term: 'All', subject: 'All', campus: 'All', search: '' };
 let currentConversation = null;
 let messageChannel = null;
 let postType = 'dropping';
@@ -238,6 +239,7 @@ async function refreshListings() {
 function uniqueSorted(arr) { return Array.from(new Set(arr)).sort(); }
 
 function renderChips() {
+  mountChips('chip-type', 'type', TYPE_OPTIONS);
   mountChips('chip-term', 'term', ['All', ...uniqueSorted(listingsCache.map((r) => r.term))]);
   mountChips('chip-subject', 'subject', ['All', ...uniqueSorted(listingsCache.map((r) => r.subject))]);
   mountChips('chip-campus', 'campus', CAMPUS_OPTIONS);
@@ -267,7 +269,13 @@ function renderBoard() {
     if (!groups.has(key)) groups.set(key, { course: r.subject + ' ' + r.course_number, term: r.term, dropping: [], needed: [] });
     groups.get(key)[r.type === 'dropping' ? 'dropping' : 'needed'].push(r);
   });
-  const threads = Array.from(groups.values()).sort((a, b) => a.course.localeCompare(b.course));
+  const threads = Array.from(groups.values())
+    .filter((t) => {
+      if (filters.type === 'Dropping') return t.dropping.length > 0;
+      if (filters.type === 'Needed') return t.needed.length > 0;
+      return true;
+    })
+    .sort((a, b) => a.course.localeCompare(b.course));
 
   if (threads.length === 0) {
     el('board-scroll').innerHTML = listingsCache.length === 0
@@ -276,15 +284,19 @@ function renderBoard() {
     return;
   }
 
-  el('board-scroll').innerHTML = threads.map((t) => `
-    <div>
-      <div class="thread-head"><div class="course">${esc(t.course)}</div><div class="term">${esc(t.term)}</div></div>
-      <div class="thread-cols">
-        ${columnHtml(t.dropping, 'drop', 'Dropping', 'No one dropping yet')}
-        ${columnHtml(t.needed, 'need', 'Needed', 'Nobody needs this yet')}
+  el('board-scroll').innerHTML = threads.map((t) => {
+    const cols = filters.type === 'Dropping'
+      ? `<div class="thread-cols one-col">${columnHtml(t.dropping, 'drop', 'Dropping', 'No one dropping yet')}</div>`
+      : filters.type === 'Needed'
+        ? `<div class="thread-cols one-col">${columnHtml(t.needed, 'need', 'Needed', 'Nobody needs this yet')}</div>`
+        : `<div class="thread-cols">${columnHtml(t.dropping, 'drop', 'Dropping', 'No one dropping yet')}${columnHtml(t.needed, 'need', 'Needed', 'Nobody needs this yet')}</div>`;
+    return `
+      <div>
+        <div class="thread-head"><div class="course">${esc(t.course)}</div><div class="term">${esc(t.term)}</div></div>
+        ${cols}
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function columnHtml(items, dotClass, label, emptyText) {
