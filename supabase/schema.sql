@@ -73,6 +73,7 @@ create table public.listings (
   subject text not null,
   course_number text not null,
   section text,
+  room text,
   term text not null,
   campus text not null,
   note text,

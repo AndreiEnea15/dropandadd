@@ -231,7 +231,7 @@ async function refreshListings() {
   el('board-scroll').innerHTML = '<div class="loading-note">Loading listings…</div>';
   const { data, error } = await supabase
     .from('listings')
-    .select('id, type, subject, course_number, section, term, campus, note, user_id, profiles(display_name)')
+    .select('id, type, subject, course_number, section, room, term, campus, note, user_id, profiles(display_name)')
     .eq('status', 'open')
     .order('created_at', { ascending: false });
 
@@ -322,13 +322,13 @@ function cardHtml(item) {
   const mine = me && item.user_id === me.id;
   const name = (item.profiles && item.profiles.display_name) || 'York student';
   const initial = (name.trim().charAt(0) || 'Y').toUpperCase();
-  const sectionLabel = item.section || 'Any section';
+  const typeLabel = item.section || 'Type not specified';
   return `
     <button class="card${mine ? ' mine' : ''}" type="button"
       data-listing-id="${esc(item.id)}" data-user-id="${esc(item.user_id)}"
       data-name="${esc(name)}" data-initial="${esc(initial)}"
-      data-course="${esc(item.subject + ' ' + item.course_number)}" data-section="${esc(sectionLabel)}">
-      <div class="section">${esc(sectionLabel)}</div>
+      data-course="${esc(item.subject + ' ' + item.course_number)}" data-section="${esc(typeLabel)}" data-room="${esc(item.room || '')}">
+      <div class="section">${esc(typeLabel)}${item.room ? ' · ' + esc(item.room) : ''}</div>
       <div class="campus">${esc(item.campus)}</div>
       ${item.note ? `<div class="note">${esc(item.note)}</div>` : ''}
       <div class="foot">
@@ -371,7 +371,8 @@ async function submitListing(e) {
 
   const subject = el('f-subject').value.trim().toUpperCase();
   const courseNumber = el('f-number').value.trim();
-  const section = el('f-section').value.trim();
+  const section = el('f-type').value.trim();
+  const room = el('f-room').value.trim();
   const term = el('f-term').value;
   const campus = el('f-campus').value;
   const note = el('f-note').value.trim();
@@ -389,6 +390,7 @@ async function submitListing(e) {
     subject,
     course_number: courseNumber,
     section: section || null,
+    room: room || null,
     term,
     campus,
     note: note || null
@@ -443,8 +445,9 @@ async function openDM(d) {
   showScreen('screen-dm');
   el('dm-avatar').textContent = d.initial;
   el('dm-name').textContent = d.name;
-  el('dm-course').textContent = d.course + (d.section ? ' · ' + d.section : '');
-  el('dm-swap').textContent = 'Re: ' + d.course + (d.section ? ' · ' + d.section : '');
+  const dmCourseLine = d.course + (d.section ? ' · ' + d.section : '') + (d.room ? ' · ' + d.room : '');
+  el('dm-course').textContent = dmCourseLine;
+  el('dm-swap').textContent = 'Re: ' + dmCourseLine;
   el('dm-thread').innerHTML = '<div class="loading-note">Loading conversation…</div>';
 
   const convo = await findOrCreateConversation(d.listingId, d.userId);
@@ -585,7 +588,7 @@ async function fetchConversationSummaries() {
   const [profilesRes, listingsRes, messagesRes] = await Promise.all([
     supabase.from('profiles').select('id, display_name').in('id', otherIds),
     listingIds.length
-      ? supabase.from('listings').select('id, subject, course_number, section').in('id', listingIds)
+      ? supabase.from('listings').select('id, subject, course_number, section, room').in('id', listingIds)
       : Promise.resolve({ data: [] }),
     supabase.from('messages').select('conversation_id, body, created_at, sender_id').in('conversation_id', convoIds).order('created_at', { ascending: false })
   ]);
@@ -602,7 +605,7 @@ async function fetchConversationSummaries() {
     const initial = (name.trim().charAt(0) || 'Y').toUpperCase();
     const listing = listingMap.get(c.listing_id);
     const courseLine = listing
-      ? listing.subject + ' ' + listing.course_number + (listing.section ? ' · ' + listing.section : '')
+      ? listing.subject + ' ' + listing.course_number + (listing.section ? ' · ' + listing.section : '') + (listing.room ? ' · ' + listing.room : '')
       : 'a listing';
     const last = lastMsgMap.get(c.id);
     const preview = last ? ((last.sender_id === me.id ? 'You: ' : '') + last.body) : 'Say hello';

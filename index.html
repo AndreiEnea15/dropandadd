@@ -179,17 +179,23 @@
     <div class="field-row">
       <div class="field">
         <label for="f-subject">Subject</label>
-        <input class="field-input" id="f-subject" type="text" placeholder="e.g. ECON" required>
+        <input class="field-input" id="f-subject" type="text" placeholder="e.g. LE/EECS" required>
       </div>
       <div class="field">
         <label for="f-number">Course number</label>
-        <input class="field-input" id="f-number" type="text" placeholder="e.g. 1010" required>
+        <input class="field-input" id="f-number" type="text" placeholder="e.g. 2030 3.00" required>
       </div>
     </div>
 
-    <div class="field">
-      <label for="f-section">Section <span class="opt">(optional)</span></label>
-      <input class="field-input" id="f-section" type="text" placeholder="e.g. Section A or LEC 01">
+    <div class="field-row">
+      <div class="field">
+        <label for="f-type">Type <span class="opt">(optional)</span></label>
+        <input class="field-input" id="f-type" type="text" placeholder="e.g. LECT 01">
+      </div>
+      <div class="field">
+        <label for="f-room">Room <span class="opt">(optional)</span></label>
+        <input class="field-input" id="f-room" type="text" placeholder="e.g. CLH G">
+      </div>
     </div>
 
     <div class="field-row">
@@ -308,6 +314,6 @@
   <p class="site-footer-note">York Drop &amp; Add is an independent student project — not affiliated with or endorsed by York University.</p>
 </footer>
 
-<script type="module" src="js/app.js?v=6"></script>
+<script type="module" src="js/app.js?v=7"></script>
 </body>
 </html>
