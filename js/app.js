@@ -12,7 +12,7 @@ function showScreen(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-const CAMPUS_OPTIONS = ['All', 'Keele', 'Glendon', 'Online'];
+const CAMPUS_OPTIONS = ['All', 'Keele', 'Glendon', 'Markham', 'Online'];
 const TYPE_OPTIONS = ['All', 'Dropping', 'Needed'];
 
 let me = null;               // { id, email, name }
