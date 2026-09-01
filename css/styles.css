@@ -174,7 +174,8 @@ svg { display: block; }
 .card { text-align: left; width: 100%; font: inherit; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 10px 11px; display: flex; flex-direction: column; gap: 5px; cursor: pointer; color: inherit; transition: box-shadow .12s ease, transform .12s ease, border-color .12s ease; }
 .card:hover { box-shadow: 0 3px 10px var(--frame-shadow); border-color: var(--text-faint); }
 .card:active { transform: scale(0.98); }
-.card.mine { cursor: default; }
+.card.mine:hover { border-color: var(--danger); }
+.card.mine .msg-cta { color: var(--danger); }
 .card .section { font-size: 12.5px; font-weight: 600; }
 .card .campus { font-size: 10.5px; color: var(--text-muted); }
 .card .note { font-size: 11px; color: var(--text-muted); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }

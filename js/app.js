@@ -195,11 +195,25 @@ function wireBoard() {
     const chip = e.target.closest('.chip');
     if (chip) { filters[chip.dataset.key] = chip.dataset.val; renderChips(); renderBoard(); return; }
     const card = e.target.closest('.card');
-    if (card && !card.classList.contains('mine')) {
-      if (!me) { showScreen('screen-auth'); return; }
+    if (!card) return;
+    if (card.classList.contains('mine')) {
+      removeListing(card.dataset.listingId);
+    } else if (!me) {
+      showScreen('screen-auth');
+    } else {
       openDM(card.dataset);
     }
   });
+}
+
+async function removeListing(id) {
+  const sure = confirm("Remove this listing? This can't be undone.");
+  if (!sure) return;
+
+  const { error } = await supabase.from('listings').delete().eq('id', id);
+  if (error) { console.error(error); alert("Couldn't remove that listing: " + error.message); return; }
+
+  await refreshListings();
 }
 
 async function refreshListings() {
@@ -297,7 +311,7 @@ function cardHtml(item) {
       ${item.note ? `<div class="note">${esc(item.note)}</div>` : ''}
       <div class="foot">
         <div class="who"><span class="avatar">${esc(initial)}</span><span class="name">${esc(mine ? 'You' : name)}</span></div>
-        <span class="msg-cta">${mine ? '' : 'Message'}</span>
+        <span class="msg-cta">${mine ? 'Remove' : 'Message'}</span>
       </div>
     </button>
   `;
