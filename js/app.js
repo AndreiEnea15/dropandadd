@@ -107,8 +107,12 @@ function wireAuth() {
     const errorEl = el('auth-error');
     errorEl.textContent = '';
 
-    if (!YORKU_EMAIL_RE.test(email)) {
-      errorEl.textContent = 'Please use your YorkU email (@my.yorku.ca or @yorku.ca).';
+    // TEMPORARY TEST BYPASS — allows any email to sign in, for testing messaging
+    // with non-YorkU accounts. Posting/messaging still gets blocked server-side
+    // by RLS for non-YorkU emails, so this is safe, but it should be reverted to
+    // the real YORKU_EMAIL_RE check before this is a real product for students.
+    if (!email.includes('@')) {
+      errorEl.textContent = 'Please enter a valid email.';
       return;
     }
 
