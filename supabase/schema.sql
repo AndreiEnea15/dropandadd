@@ -1,5 +1,4 @@
 -- York Drop & Add — Supabase schema
--- Run this once in your Supabase project's SQL editor (Dashboard → SQL Editor → New query).
 
 create extension if not exists pgcrypto;
 
