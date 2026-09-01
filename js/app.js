@@ -30,10 +30,16 @@ async function boot() {
   wireBoard();
   wirePost();
   wireDM();
+  wireSiteNav();
 
   // The board is public — show it immediately, don't wait on auth to load it.
   showScreen('screen-board');
   await refreshListings();
+
+  // Links from other pages (e.g. about.html "Log in") land here as index.html#signin.
+  if (window.location.hash === '#signin') {
+    showScreen('screen-auth');
+  }
 
   const { data: { session } } = await supabase.auth.getSession();
   await onSessionChange(session);
@@ -102,6 +108,18 @@ async function ensureProfile(user) {
 function applySelectChevrons() {
   const chevron = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2360606a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E";
   document.querySelectorAll('select.field-input').forEach((s) => { s.style.backgroundImage = `url("${chevron}")`; });
+}
+
+/* ============================== site nav ============================== */
+
+function wireSiteNav() {
+  const openSignIn = (e) => {
+    e.preventDefault();
+    showScreen('screen-auth');
+    el('frame').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+  el('nav-login')?.addEventListener('click', openSignIn);
+  el('nav-signup')?.addEventListener('click', openSignIn);
 }
 
 /* ============================== auth ============================== */
