@@ -301,7 +301,7 @@ function renderBoard() {
         ? `<div class="thread-cols one-col">${columnHtml(t.needed, 'need', 'Needed', 'Nobody needs this yet')}</div>`
         : `<div class="thread-cols">${columnHtml(t.dropping, 'drop', 'Dropping', 'No one dropping yet')}${columnHtml(t.needed, 'need', 'Needed', 'Nobody needs this yet')}</div>`;
     return `
-      <div>
+      <div class="thread-card">
         <div class="thread-head"><div class="course">${esc(t.course)}</div><div class="term">${esc(t.term)}</div></div>
         ${cols}
       </div>
