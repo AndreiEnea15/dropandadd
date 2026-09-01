@@ -132,6 +132,16 @@ function wireAuth() {
   el('auth-again').addEventListener('click', resetAuthForm);
   el('back-from-auth').addEventListener('click', () => showScreen('screen-board'));
 
+  el('google-signin').addEventListener('click', async () => {
+    const errorEl = el('auth-error');
+    errorEl.textContent = '';
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + window.location.pathname }
+    });
+    if (error) errorEl.textContent = error.message;
+  });
+
   el('account-name-save').addEventListener('click', saveDisplayName);
   el('account-sign-out').addEventListener('click', () => supabase.auth.signOut());
   el('account-delete').addEventListener('click', deleteMyAccount);
