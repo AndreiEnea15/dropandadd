@@ -20,7 +20,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/styles.css?v=10">
+  <link rel="stylesheet" href="css/styles.css?v=11">
 
   <script type="application/ld+json">
   {
@@ -54,8 +54,7 @@
 
 <div class="stage-header">
   <div class="kicker">York Drop &amp; Add</div>
-  <h1>Post what you&rsquo;re dropping. Find what you need.</h1>
-  <p>Looking for a seat? Dropping a course? Connect with another student.</p>
+  <h1>Drop a course.<span class="or">or</span>Add the one you need.</h1>
 
   <div class="hero-actions">
     <button class="hero-btn primary" id="hero-find" type="button">Find a course</button>
@@ -65,10 +64,6 @@
   <div class="recent-listings" id="recent-listings" style="display:none;">
     <div class="recent-listings-label">Recent listings</div>
     <ul class="recent-listings-list" id="recent-listings-list"></ul>
-  </div>
-
-  <div class="hero-warning">
-    <strong>Important:</strong> A listing does not reserve a seat. Course availability is controlled by York University — you're responsible for making the change yourself in REM.
   </div>
 </div>
 
@@ -130,46 +125,6 @@
     </div>
 
   </div>
-</section>
-
-<!-- ============ BOARD ============ -->
-<section class="screen active" id="screen-board" aria-label="Course thread board">
-  <div class="search-bar">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-    <input type="search" id="search-course" placeholder="Search course, e.g. ECON 1010" autocomplete="off">
-  </div>
-
-  <div class="filters">
-    <div class="chip-group">
-      <div class="chip-group-label">Type</div>
-      <div class="chiprow" id="chip-type"></div>
-    </div>
-    <div class="chip-group">
-      <div class="chip-group-label">Term</div>
-      <div class="chiprow" id="chip-term"></div>
-    </div>
-    <div class="chip-group">
-      <div class="chip-group-label">Subject</div>
-      <div class="chiprow" id="chip-subject"></div>
-    </div>
-    <div class="chip-group">
-      <div class="chip-group-label">Campus</div>
-      <div class="chiprow" id="chip-campus"></div>
-    </div>
-    <div class="disclaimer">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-      <span>We just connect you — you make the change yourself in REM.</span>
-    </div>
-  </div>
-
-  <div class="board-scroll" id="board-scroll">
-    <div class="loading-note">Loading listings…</div>
-  </div>
-
-  <button class="fab" id="fab-post">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-    <span class="lbl">Post a listing</span>
-  </button>
 </section>
 
 <!-- ============ POST FORM ============ -->
@@ -291,7 +246,12 @@
   </div>
 </section>
 
-<div class="caption">Browse freely — sign in with a YorkU email only when you're ready to post or message someone.</div>
+<!-- ============ SHORT EXPLANATION ============ -->
+<div class="lede">
+  <h2>A simpler way to find course swaps at York.</h2>
+  <p>Drop &amp; Add helps York students connect when one student is dropping a course and another is looking for a seat.</p>
+  <p>Search by course, term, subject, or campus. When you find a potential match, message the other student and coordinate the change through REM.</p>
+</div>
 
 <section class="how-it-works">
   <h2>How it works</h2>
@@ -299,26 +259,79 @@
   <div class="how-steps">
     <div class="how-step">
       <span class="num">01</span>
-      <h3>Post what you have or need</h3>
-      <p>Pick your course, section, term and campus, and say whether you're dropping it or looking for a seat.</p>
+      <h3>Post</h3>
+      <p>Tell other students which course you're dropping or looking for.</p>
     </div>
     <div class="how-step">
       <span class="num">02</span>
-      <h3>Get grouped automatically</h3>
-      <p>Your post joins everyone else's for that exact course, so anyone looking for what you have can find you.</p>
+      <h3>Find a match</h3>
+      <p>Browse listings by course, term, subject, and campus.</p>
     </div>
     <div class="how-step">
       <span class="num">03</span>
-      <h3>Message each other</h3>
-      <p>Sign in with your YorkU email to chat directly with the other student and work out the details.</p>
+      <h3>Connect</h3>
+      <p>Message another York student with the opposite need.</p>
     </div>
     <div class="how-step">
       <span class="num">04</span>
-      <h3>You make it official</h3>
-      <p>We only make the connection — you each make the actual change in REM.</p>
+      <h3>Change it in REM</h3>
+      <p>Coordinate the timing, then make the official change yourself in York's REM system.</p>
     </div>
   </div>
 </section>
+
+<!-- ============ BOARD ============ -->
+<section class="screen active" id="screen-board" aria-label="Course thread board">
+  <div class="search-bar">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <input type="search" id="search-course" placeholder="Search course, e.g. ECON 1010" autocomplete="off">
+  </div>
+
+  <div class="filters">
+    <div class="chip-group">
+      <div class="chip-group-label">Type</div>
+      <div class="chiprow" id="chip-type"></div>
+    </div>
+    <div class="chip-group">
+      <div class="chip-group-label">Term</div>
+      <div class="chiprow" id="chip-term"></div>
+    </div>
+    <div class="chip-group">
+      <div class="chip-group-label">Subject</div>
+      <div class="chiprow" id="chip-subject"></div>
+    </div>
+    <div class="chip-group">
+      <div class="chip-group-label">Campus</div>
+      <div class="chiprow" id="chip-campus"></div>
+    </div>
+    <div class="disclaimer">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <span>We just connect you — you make the change yourself in REM.</span>
+    </div>
+  </div>
+
+  <div class="board-scroll" id="board-scroll">
+    <div class="loading-note">Loading listings…</div>
+  </div>
+
+  <button class="fab" id="fab-post">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+    <span class="lbl">Post a listing</span>
+  </button>
+</section>
+
+<div class="caption">Browse freely — sign in with a YorkU email only when you're ready to post or message someone.</div>
+
+<!-- ============ TRUST ============ -->
+<div class="trust">
+  <h2>Built for York students</h2>
+  <p>Drop &amp; Add uses York student email verification for posting and messaging. Your email address isn't displayed to other students.</p>
+  <p>Drop &amp; Add does not reserve, transfer, or guarantee course seats. Course enrollment and availability remain controlled by York University.</p>
+</div>
+
+<div class="affiliation-note">
+  <strong>Not affiliated with York University.</strong> Drop &amp; Add is an independent student project designed to help York students connect. All official course changes are made through York University's REM system.
+</div>
 
 <footer class="site-footer">
   <div class="site-footer-links">
