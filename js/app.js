@@ -54,6 +54,7 @@ async function boot() {
 async function onSessionChange(session) {
   if (session && session.user) {
     me = await ensureProfile(session.user);
+    clearPendingAuth();
   } else {
     me = null;
     if (messageChannel) { supabase.removeChannel(messageChannel); messageChannel = null; }
@@ -64,6 +65,12 @@ async function onSessionChange(session) {
     }
   }
   resetAuthForm();
+  // Not signed in and a magic-link/code request is still pending? Phones commonly reload a
+  // backgrounded tab (to save memory) while you've switched to the mail app to read the code —
+  // restore the code-entry screen instead of leaving a blank "enter your email" form. Runs after
+  // every resetAuthForm() (including auth-state events supabase fires on its own) so nothing
+  // downstream can silently undo the restore.
+  if (!me) restorePendingAuth();
   updateAuthUI();
   await refreshListings();
   await refreshUnreadBadge();
@@ -129,10 +136,7 @@ function wireAuth() {
 
     if (error) { errorEl.textContent = error.message; return; }
 
-    pendingAuthEmail = email;
-    el('auth-form').style.display = 'none';
-    el('auth-sent').style.display = 'block';
-    el('auth-sent-email').textContent = email;
+    showPendingAuth(email);
   });
 
   el('auth-code-form').addEventListener('submit', async (e) => {
@@ -142,7 +146,7 @@ function wireAuth() {
     const errorEl = el('auth-code-error');
     errorEl.textContent = '';
 
-    if (!/^\d{6}$/.test(code)) { errorEl.textContent = 'Enter the 6-digit code from the email.'; return; }
+    if (!/^\d{4,12}$/.test(code)) { errorEl.textContent = 'Enter the sign-in code from the email.'; return; }
 
     const btn = el('auth-code-submit');
     btn.disabled = true;
@@ -155,7 +159,7 @@ function wireAuth() {
     // onAuthStateChange picks up the new session and closes this screen out.
   });
 
-  el('auth-again').addEventListener('click', resetAuthForm);
+  el('auth-again').addEventListener('click', () => { clearPendingAuth(); resetAuthForm(); });
   el('back-from-auth').addEventListener('click', () => showScreen('screen-board'));
 
   el('account-name-save').addEventListener('click', saveDisplayName);
@@ -202,7 +206,31 @@ function resetAuthForm() {
   el('auth-error').textContent = '';
   el('auth-code-form').reset();
   el('auth-code-error').textContent = '';
+}
+
+// Remembers "we just sent a code to X" across a tab reload — phones commonly reload a
+// backgrounded browser tab (to save memory) while you've switched to the mail app to read the
+// code, which would otherwise silently drop you back to the blank email form with no code box.
+function showPendingAuth(email) {
+  pendingAuthEmail = email;
+  try { sessionStorage.setItem('pendingAuthEmail', email); } catch { /* ignore */ }
+  el('auth-form').style.display = 'none';
+  el('auth-sent').style.display = 'block';
+  el('auth-sent-email').textContent = email;
+}
+
+function clearPendingAuth() {
   pendingAuthEmail = '';
+  try { sessionStorage.removeItem('pendingAuthEmail'); } catch { /* ignore */ }
+}
+
+function restorePendingAuth() {
+  let email = '';
+  try { email = sessionStorage.getItem('pendingAuthEmail') || ''; } catch { /* ignore */ }
+  if (email) {
+    showScreen('screen-auth');
+    showPendingAuth(email);
+  }
 }
 
 /* ============================== board ============================== */

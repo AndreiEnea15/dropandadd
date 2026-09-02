@@ -93,11 +93,11 @@
 
       <div class="auth-sent" id="auth-sent">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent);margin:0 auto;"><path d="M4 4h16v16H4z" opacity="0"></path><path d="M22 6 12 13 2 6"></path><path d="M2 6h20v12H2z"></path></svg>
-        <p>Check <strong id="auth-sent-email"></strong> for a sign-in link — on your phone, the 6-digit code in that email is more reliable than the link. Type it in below.</p>
+        <p>Check <strong id="auth-sent-email"></strong> for a sign-in link — on your phone, the code in that email is more reliable than the link. Type it in below.</p>
 
         <form id="auth-code-form" class="auth-field" style="display:flex;flex-direction:column;gap:8px;">
-          <label for="auth-code">6-digit code</label>
-          <input class="field-input" id="auth-code" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="6" placeholder="123456">
+          <label for="auth-code">Sign-in code</label>
+          <input class="field-input" id="auth-code" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" maxlength="12" placeholder="e.g. 12345678">
           <div class="auth-error" id="auth-code-error"></div>
           <button class="btn-submit" id="auth-code-submit" type="submit">Verify code</button>
         </form>
@@ -351,6 +351,6 @@
   <p class="site-footer-note">Created by Andrei Enea</p>
 </footer>
 
-<script type="module" src="js/app.js?v=12"></script>
+<script type="module" src="js/app.js?v=13"></script>
 </body>
 </html>
