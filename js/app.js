@@ -254,7 +254,7 @@ function renderRecentListings() {
   const list = el('recent-listings-list');
   if (!wrap || !list) return;
   if (!listingsCache.length) { wrap.style.display = 'none'; list.innerHTML = ''; return; }
-  const recent = listingsCache.slice(0, 5);
+  const recent = listingsCache.slice(0, 6);
   list.innerHTML = recent.map((r) => {
     const label = r.type === 'dropping' ? 'Dropping' : 'Needed';
     const dotClass = r.type === 'dropping' ? 'drop' : 'need';
