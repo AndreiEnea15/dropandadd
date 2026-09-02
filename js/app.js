@@ -23,6 +23,7 @@ let messageChannel = null;
 let postType = 'dropping';
 let dmReturnScreen = 'screen-board'; // where the back button on the DM screen goes
 let currentOtherName = '';   // the other person in the open DM, used to label their bubbles
+let pendingAuthEmail = '';   // email a magic link/code was just sent to, for the code-entry fallback
 
 /* ============================== boot ============================== */
 
@@ -128,9 +129,30 @@ function wireAuth() {
 
     if (error) { errorEl.textContent = error.message; return; }
 
+    pendingAuthEmail = email;
     el('auth-form').style.display = 'none';
     el('auth-sent').style.display = 'block';
     el('auth-sent-email').textContent = email;
+  });
+
+  el('auth-code-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const codeInput = el('auth-code');
+    const code = codeInput.value.trim();
+    const errorEl = el('auth-code-error');
+    errorEl.textContent = '';
+
+    if (!/^\d{6}$/.test(code)) { errorEl.textContent = 'Enter the 6-digit code from the email.'; return; }
+
+    const btn = el('auth-code-submit');
+    btn.disabled = true;
+    btn.textContent = 'Verifying…';
+    const { error } = await supabase.auth.verifyOtp({ email: pendingAuthEmail, token: code, type: 'email' });
+    btn.disabled = false;
+    btn.textContent = 'Verify code';
+
+    if (error) { errorEl.textContent = error.message; return; }
+    // onAuthStateChange picks up the new session and closes this screen out.
   });
 
   el('auth-again').addEventListener('click', resetAuthForm);
@@ -178,6 +200,9 @@ function resetAuthForm() {
   el('auth-sent').style.display = 'none';
   el('auth-form').reset();
   el('auth-error').textContent = '';
+  el('auth-code-form').reset();
+  el('auth-code-error').textContent = '';
+  pendingAuthEmail = '';
 }
 
 /* ============================== board ============================== */
