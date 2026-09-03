@@ -145,3 +145,37 @@ available without authentication.
 ├── sitemap.xml
 └── README.md
 
+## Privacy and safety
+
+York Drop & Add does not execute course drops, adds, or swaps.
+
+It does not guarantee that a course seat will become available or that a
+student will complete a proposed change.
+
+Students are responsible for verifying course availability, prerequisites,
+deadlines, and any actual enrollment change through York's official systems.
+
+See:
+
+- [Privacy Notice](privacy.html)
+- [Terms of Use](terms.html)
+- [FAQ](faq.html)
+- [About](about.html)
+
+## Documentation
+
+A visual walkthrough of the application is available here:
+
+[How York Drop & Add Works](how-it-works.pdf)
+
+The walkthrough covers public browsing, YorkU sign-in, account management,
+listing interaction, messaging, and the messages inbox.
+
+## Status
+
+**Working student project**
+
+The core public board, YorkU authentication, listings, private messaging,
+real-time updates, account management, and data deletion flow are implemented.
+
+## License
