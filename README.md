@@ -144,6 +144,7 @@ available without authentication.
 ├── robots.txt
 ├── sitemap.xml
 └── README.md
+```
 
 ## Privacy and safety
 
