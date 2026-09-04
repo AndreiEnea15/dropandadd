@@ -82,20 +82,6 @@ Students can have private conversations about listings.
 Messages appear in real time without refreshing, and unread conversations
 are indicated in the interface.
 
-### Privacy
-
-Other students see your display name, not your email address.
-
-Conversations are private to their participants.
-
-Users can also:
-
-- Change their display name
-- Remove their listings
-- Delete their stored account data
-
-See [Privacy](privacy.html) for details.
-
 ## Tech stack
 
 - HTML
