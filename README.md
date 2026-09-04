@@ -148,6 +148,13 @@ available without authentication.
 
 ## Privacy and safety
 
+Other students see your display name, not your email address. 
+Conversations are private to their participants.
+Users can also:
+Change their display name
+Remove their listings
+Delete their stored account data
+
 York Drop & Add does not execute course drops, adds, or swaps.
 
 It does not guarantee that a course seat will become available or that a
