@@ -169,7 +169,5 @@ listing interaction, messaging, and the messages inbox.
 
 **Working student project**
 
-The core public board, YorkU authentication, listings, private messaging,
-real-time updates, account management, and data deletion flow are implemented.
-
 ## License
+MIT — see [LICENSE](LICENSE).
